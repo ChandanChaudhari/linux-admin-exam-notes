@@ -134,3 +134,11 @@ chage -E 2026-03-30 user1
 
 
 #ACL 
+
+## Give user read access without changing Ownership to file 
+
+setfacl -m u:user1:r /dev/file1 
+
+## Give user to write access to dir ( to give write access need to give full rwx to dir)
+
+setfacl -m u:user1:rwx /dir
