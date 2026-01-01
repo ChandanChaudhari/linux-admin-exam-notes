@@ -27,7 +27,7 @@ echo "/dev/datastore/database /mnt/database ext3 defaults 0 0" >> /etc/fstab
 
 
 
-#The logical volume shrink in volume group datastore is mounted on /shrink and formatted with ext4.
+# The logical volume shrink in volume group datastore is mounted on /shrink and formatted with ext4.
 Reduce the size to 220 MB.
 (The acceptable range is 200–260 MB.)
 
