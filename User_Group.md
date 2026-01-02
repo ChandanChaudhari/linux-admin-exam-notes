@@ -188,6 +188,10 @@ umask
 ### Default for files: 666 (rw-rw-rw-) → no execute by default.
 ### Default for directories: 777 (rwxrwxrwx).
 
+## umask is not set on a directory itself—it’s set at the shell or process level, which affects how new files and directories are 
+## created by that process. Here’s where you can set it:
+## umask affects new files and directories created by that shell/process, not existing ones.
+
 ## ✅ How umask works
 
 ## Formula:
@@ -229,3 +233,94 @@ If umask = 0027:
 Edit the user’s shell configuration file /home/user1 (e.g., ~/.bashrc, ~/.profile, or ~/.bash_profile)
 echo "umask 027" >> /home/user1/.bashrc
 
+## to check
+
+source ~/.bashrc
+
+## set temporory umask
+
+umask 0027 
+
+
+# Sudo Access
+
+## Allow user full sudo access
+
+usermod -aG wheel user1
+
+or 
+
+to give only access for specific command
+
+visudo
+
+## add line
+
+username ALL=(ALL) ALL  (this mean user can run any command(3rd all) as any user(2nd all) on all server(1st all) )
+
+johan server1=(All) All (This mean user Johan can run all command as any use include root on only server1)
+
+## give user passwordless sudo
+
+username ALL=(ALL) NOPASSWD: ALL (then user can run any command without entering password )
+
+## Allow group to have sudo access
+
+%group All=(root) ALL (Give group sudo access % shows group )
+
+## Allow user to run only specific command 
+
+user1 ALL=(root) /usr/bin/systemctl restart httpd 
+
+## verify sudo access for user
+
+sudo -l -U user1
+
+## Prevent user from using su. 
+
+gpasswd -d user wheel
+
+# Exam Fixes 
+
+newgrp groupname
+What this command does
+
+newgrp changes the current effective group of the logged-in user without logging out.
+
+Why it is used
+
+Normally, when you add a user to a new group, the user must log out and log in again for the group change to take effect.
+newgrp applies the group change immediately.
+
+
+## Example
+
+groups
+
+## Output:
+
+user1 wheel developers
+
+## Now run:
+
+newgrp developers
+
+## After this:
+
+The primary group for the current shell session becomes developers
+
+Any files created now will belong to developers
+
+Important exam note
+
+newgrp opens a new shell
+
+When you exit that shell, you return to the original group
+
+## user is locked, Check using 
+
+passwd -S user1
+
+Output : user1 lk = lock
+
+passwd -u user1 (give nwew password)
