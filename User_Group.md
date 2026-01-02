@@ -4,7 +4,7 @@
 
 useradd user1
 
-passwd user1 (Then enter password) 
+passwd user1 (Then enter password for user1) 
 
 ## delete existing user
 
@@ -133,7 +133,7 @@ chage -W 5 user1
 chage -E 2026-03-30 user1 
 
 
-#ACL 
+#  ACL 
 
 ## Give user read access without changing Ownership to file 
 
@@ -142,3 +142,90 @@ setfacl -m u:user1:r /dev/file1
 ## Give user to write access to dir ( to give write access need to give full rwx to dir)
 
 setfacl -m u:user1:rwx /dir
+
+## remove acl permission from dir
+
+setfacl -x u:user1 /dir
+
+## vrify acl permission 
+
+getfacl /directory
+
+## Identify ACL from ls -l output (+ sign)
+
+# Special permissions 
+
+## The SGID (Set Group ID) bit on a directory ensures that new files and subdirectories created inside inherit the directory’s group ownership.
+
+chmod g+s /path/to/dir   (ls -ld /path/to/dir this will show set guid drwxr-sr-x)
+
+## Set sticky bit on a shared directory
+## The sticky bit prevents users from deleting files they don’t own in a shared directory (commonly used on /tmp).
+
+chmod +t /tmp (drwxr--rwt)
+
+### (+t means other have xecute permission on dir )
+### (+T means other dont have xecute permission)
+
+## Only the file owner, the directory owner, or root can delete files.
+## Other users, even if they have write permissions on the directory, cannot delete files they don’t own.
+
+## . Identify SUID file
+## The SUID (Set User ID) bit on a file allows the file to run with the owner’s privileges (often root), regardless of who executes it.
+
+find / -perm -4000
+
+# Umask
+## check default umask
+
+umask 
+
+## What is umask?
+
+### umask (User Mask) defines which permission bits should be turned off when new files or directories are created.
+### It works by subtracting permissions from the system defaults:
+
+### Default for files: 666 (rw-rw-rw-) → no execute by default.
+### Default for directories: 777 (rwxrwxrwx).
+
+## ✅ How umask works
+
+## Formula:
+### Final Permission = Default Permission - umask
+
+## Example:
+
+### umask = 0022
+
+### Files: 666 - 022 = 644 → rw-r--r--
+### Directories: 777 - 022 = 755 → rwxr-xr-x
+
+## ✅ Why files don’t get execute by default
+
+## For security reasons, files are created with 666 (no execute bit).
+## Even if umask is 0000, files will be 666 → rw-rw-rw- (still no execute).
+## To make files executable, you must manually add execute using chmod or create them via a program that sets execute.
+
+Example:
+If umask = 0027:
+
+### Files: 666 - 027 = 640 → rw-r-----
+### Directories: 777 - 027 = 750 → rwxr-x---
+
+## Umask only removes permissions, never adds
+
+### umask works like a filter: it subtracts permissions from the default set.
+### It cannot grant extra permissions (like execute) that weren’t in the default.
+### Example:
+
+### Default file permissions: 666 (rw-rw-rw-)
+### umask: 0022
+### Result: 644 (rw-r--r--)
+
+### Notice: umask removed write for group and others, but didn’t add anything.
+
+## Set permanent umask for user
+
+Edit the user’s shell configuration file /home/user1 (e.g., ~/.bashrc, ~/.profile, or ~/.bash_profile)
+echo "umask 027" >> /home/user1/.bashrc
+
