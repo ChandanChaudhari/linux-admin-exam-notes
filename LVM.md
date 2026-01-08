@@ -1,4 +1,4 @@
-#### XFS filesystem cannot be reduce only be extended. ext filesystem can be reduced as well as extended
+### XFS filesystem cannot be reduce only be extended. ext filesystem can be reduced as well as extended
 #### e2fsck -f /dev/vg/lv verify fs integrity for ext3 and ext4 Mandatory before resizing or reducing. XFS cannot be reduced, so this step is irrelevant for shrinking XFS
 
 Create a logical volume named database in the datastore volume group using 50 extents.
