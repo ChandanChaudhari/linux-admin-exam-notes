@@ -71,10 +71,3 @@ Format it with ext3 and mount it persistently on /mnt/database.
 #### 4) check updated size 
 
 `df -hT`
-
-
-
-
-
-
-
