@@ -1,168 +1,168 @@
-#User
+### User
 
-## User Add and del
+#### User Add and del
 
-useradd user1
+`useradd user1`
 
-passwd user1 (Then enter password for user1) 
+`passwd user1` (Then enter password for user1) 
 
-## delete existing user
+#### delete existing user
 
-userdel user1 (Delete user1 but keep home dir)
+`userdel user1` (Delete user1 but keep home dir)
 
-userdel -r user1 (delete user with there home directory)
+`userdel -r user1` (delete user with there home directory)
 
-# Home Dir 
-## create user without home dir
+### Home Dir 
+#### create user without home dir
 
-useradd -M user1
+`useradd -M user1`
 
-## create user with custom home directory
+#### create user with custom home directory
 
-useradd -d /data/user1 -m user1 
+`useradd -d /data/user1 -m user1 `
 
-## change home dir of existing user
+#### change home dir of existing user
 
-usermod -d /newhome/user1 -m user1
+`usermod -d /newhome/user1 -m user1`
 
-## Check user creation
+#### Check user creation
 
-id user1 (show user info) or which user1 
+`id user1 (show user info) or which user1 `
 
-## Add user with specific UID
+#### Add user with specific UID
 
-useradd -u 1234 user2
+`useradd -u 1234 user2`
 
-## Add user with specific uid with bash shell
+#### Add user with specific uid with bash shell
 
-useradd -u 2000 -m -s /bin/bash user1
+`useradd -u 2000 -m -s /bin/bash user1`
 
-## Create user with nologin shell
+#### Create user with nologin shell
 
-useradd -s /sbin/nologin user2
+`useradd -s /sbin/nologin user2
+`
+#### Create system user (service account)
 
-## Create system user (service account)
+`useradd -r serviceuser`
 
-useradd -r serviceuser
+#### Add user with primary group
 
-## Add user with primary group
+`useradd -g database user3 `
 
-useradd -g database user3 
+#### Add user with primary and seconday groups 
 
-## Add user with primary and seconday groups 
-
-useradd -g database -G wheel,devops user3 (create user with both primary and secondary groups) 
+`useradd -g database -G wheel,devops user3` (create user with both primary and secondary groups) 
 
 ### p = primary group G = secondary(supplementry group)
 
-## Add a existing user to additional group ( a= append , update group without removing previous group)
+#### Add a existing user to additional group ( a= append , update group without removing previous group)
 
-usermod -aG devops user3
+`usermod -aG devops user3`
 
-## remove user from supplementry group ( additional group ) ( we cannot remove user primary group. If want to do first change user group to other group and delete previous group)
+#### remove user from supplementry group ( additional group ) ( we cannot remove user primary group. If want to do first change user group to other group and delete previous group)
 
-sudo gpasswd -d wheel user3 (Secondary group wheel will be deleted )
+`sudo gpasswd -d wheel user3` (Secondary group wheel will be deleted )
  
-## change user primary group 
+#### change user primary group 
 
-sudo usermod -g datastore user3
+`sudo usermod -g datastore user3`
 
-# Group
-## create group with name database
+### Group
+#### create group with name database
 
-groupadd database
+`groupadd database`
 
-## create group with specific GID
+#### create group with specific GID
 
-groupadd -g 3000 devops
+`groupadd -g 3000 devops`
 
-## Check group exist or created
+#### Check group exist or created
 
-sudo groups user3
+`sudo groups user3`
 
-## delete group
-
+#### delete group
+`
 groupdel devops
+`
+#### Change name of existing group
 
-## Change name of existing group
+`groupmod -n newgroup oldgroup `
 
-groupmod -n newgroup oldgroup 
+#### remove user from group
 
-## remove user from group
+`gpasswd -d user1 group1`
 
-gpasswd -d user1 group1
+### Password and Account control
 
-# Password and Account control
+### set password for existing user
 
-## set password for existing user
+`passwd user1`
 
-passwd user1
+### lock user
 
-## lock user
+`passwd -l user1`
 
-passwd -l user1
+### unlock user account
 
-## unlock user account
+`passwd -u user1 `
 
-passwd -u user1 
+#### Disable user account without deleting account
 
-## Disable user account without deleting account
+`usermod -s /sbin/nologin user1` 
 
-usermod -s /sbin/nologin user1 
+## chage
 
-# chage
+#### check user aging policy
 
-## check user aging policy
+`chage -l user1`
 
-chage -l user1
+#### force user to change password at next login
+`
+chage -d 0 user1 `
 
-## force user to change password at next login
+#### Set password expiration to Max 30 days 
+`
+chage -M 30 user1`
 
-chage -d 0 user1 
+#### set password warning period 
 
-## Set password expiration to Max 30 days 
+`chage -W 5 user1`
 
-chage -M 30 user1
+#### Set Account expiry 
 
-## set password warning period 
-
-chage -W 5 user1
-
-## Set Account expiry 
-
-chage -E 2026-03-30 user1 
+`chage -E 2026-03-30 user1` 
 
 
-#  ACL 
+##  ACL 
 
-## Give user read access without changing Ownership to file 
+#### Give user read access without changing Ownership to file 
 
-setfacl -m u:user1:r /dev/file1 
+`setfacl -m u:user1:r /dev/file1` 
 
-## Give user to write access to dir ( to give write access need to give full rwx to dir)
+#### Give user to write access to dir ( to give write access need to give full rwx to dir)
 
-setfacl -m u:user1:rwx /dir
+`setfacl -m u:user1:rwx /dir`
 
-## remove acl permission from dir
+#### remove acl permission from dir
 
-setfacl -x u:user1 /dir
+`setfacl -x u:user1 /dir`
 
-## vrify acl permission 
+#### vrify acl permission 
 
-getfacl /directory
+`getfacl /directory`
 
-## Identify ACL from ls -l output (+ sign)
+#### Identify ACL from ls -l output (+ sign)
 
-# Special permissions 
+### Special permissions 
 
-## The SGID (Set Group ID) bit on a directory ensures that new files and subdirectories created inside inherit the directory’s group ownership.
+#### The SGID (Set Group ID) bit on a directory ensures that new files and subdirectories created inside inherit the directory’s group ownership.
 
-chmod g+s /path/to/dir   (ls -ld /path/to/dir this will show set guid drwxr-sr-x)
+`chmod g+s /path/to/dir`   (ls -ld /path/to/dir this will show set guid drwxr-sr-x)
 
 ## Set sticky bit on a shared directory
 ## The sticky bit prevents users from deleting files they don’t own in a shared directory (commonly used on /tmp).
 
-chmod +t /tmp (drwxr--rwt)
+`chmod +t /tmp (drwxr--rwt)`
 
 ### (+t means other have xecute permission on dir )
 ### (+T means other dont have xecute permission)
@@ -171,118 +171,118 @@ chmod +t /tmp (drwxr--rwt)
 ## Other users, even if they have write permissions on the directory, cannot delete files they don’t own.
 
 ## . Identify SUID file
-## The SUID (Set User ID) bit on a file allows the file to run with the owner’s privileges (often root), regardless of who executes it.
+### The SUID (Set User ID) bit on a file allows the file to run with the owner’s privileges (often root), regardless of who executes it.
 
-find / -perm -4000
+`find / -perm -4000`
 
-# Umask
-## check default umask
+### Umask
+#### check default umask
 
-umask 
+`umask` 
 
-## What is umask?
+### What is umask?
 
-### umask (User Mask) defines which permission bits should be turned off when new files or directories are created.
-### It works by subtracting permissions from the system defaults:
+#### umask (User Mask) defines which permission bits should be turned off when new files or directories are created.
+#### It works by subtracting permissions from the system defaults:
 
-### Default for files: 666 (rw-rw-rw-) → no execute by default.
-### Default for directories: 777 (rwxrwxrwx).
+#### Default for files: 666 (rw-rw-rw-) → no execute by default.
+#### Default for directories: 777 (rwxrwxrwx).
 
-## umask is not set on a directory itself—it’s set at the shell or process level, which affects how new files and directories are 
-## created by that process. Here’s where you can set it:
-## umask affects new files and directories created by that shell/process, not existing ones.
+#### umask is not set on a directory itself—it’s set at the shell or process level, which affects how new files and directories are 
+#### created by that process. Here’s where you can set it:
+#### umask affects new files and directories created by that shell/process, not existing ones.
 
 ## ✅ How umask works
 
-## Formula:
-### Final Permission = Default Permission - umask
+### Formula:
+#### Final Permission = Default Permission - umask
 
-## Example:
+### Example:
 
-### umask = 0022
+#### umask = 0022
 
-### Files: 666 - 022 = 644 → rw-r--r--
-### Directories: 777 - 022 = 755 → rwxr-xr-x
+#### Files: 666 - 022 = 644 → rw-r--r--
+#### Directories: 777 - 022 = 755 → rwxr-xr-x
 
-## ✅ Why files don’t get execute by default
+### ✅ Why files don’t get execute by default
 
-## For security reasons, files are created with 666 (no execute bit).
-## Even if umask is 0000, files will be 666 → rw-rw-rw- (still no execute).
-## To make files executable, you must manually add execute using chmod or create them via a program that sets execute.
+#### For security reasons, files are created with 666 (no execute bit).
+#### Even if umask is 0000, files will be 666 → rw-rw-rw- (still no execute).
+#### To make files executable, you must manually add execute using chmod or create them via a program that sets execute.
 
 Example:
 If umask = 0027:
 
-### Files: 666 - 027 = 640 → rw-r-----
-### Directories: 777 - 027 = 750 → rwxr-x---
+#### Files: 666 - 027 = 640 → rw-r-----
+#### Directories: 777 - 027 = 750 → rwxr-x---
 
-## Umask only removes permissions, never adds
+### Umask only removes permissions, never adds
 
-### umask works like a filter: it subtracts permissions from the default set.
-### It cannot grant extra permissions (like execute) that weren’t in the default.
-### Example:
+#### umask works like a filter: it subtracts permissions from the default set.
+#### It cannot grant extra permissions (like execute) that weren’t in the default.
+#### Example:
 
-### Default file permissions: 666 (rw-rw-rw-)
-### umask: 0022
-### Result: 644 (rw-r--r--)
+#### Default file permissions: 666 (rw-rw-rw-)
+#### umask: 0022
+#### Result: 644 (rw-r--r--)
 
-### Notice: umask removed write for group and others, but didn’t add anything.
+#### Notice: umask removed write for group and others, but didn’t add anything.
 
-## Set permanent umask for user
+#### Set permanent umask for user
 
-Edit the user’s shell configuration file /home/user1 (e.g., ~/.bashrc, ~/.profile, or ~/.bash_profile)
-echo "umask 027" >> /home/user1/.bashrc
+Edit the user’s shell configuration file `/home/user1` (e.g., ~/.bashrc, ~/.profile, or ~/.bash_profile)
+`echo "umask 027" >> /home/user1/.bashrc`
 
-## to check
+#### to check
 
-source ~/.bashrc
+`source ~/.bashrc`
 
-## set temporory umask
+#### set temporory umask
 
-umask 0027 
+`umask 0027 `
 
 
-# Sudo Access
+### Sudo Access
 
-## Allow user full sudo access
+#### Allow user full sudo access
 
-usermod -aG wheel user1
+`usermod -aG wheel user1`
 
 or 
 
 to give only access for specific command
 
-visudo
+`visudo`
 
-## add line
+#### add line
 
-username ALL=(ALL) ALL  (this mean user can run any command(3rd all) as any user(2nd all) on all server(1st all) )
+`username ALL=(ALL) ALL ` (this mean user can run any command(3rd all) as any user(2nd all) on all server(1st all) )
 
-johan server1=(All) All (This mean user Johan can run all command as any use include root on only server1)
+`johan server1=(All) All` (This mean user Johan can run all command as any use include root on only server1)
 
-## give user passwordless sudo
+#### give user passwordless sudo
 
-username ALL=(ALL) NOPASSWD: ALL (then user can run any command without entering password )
+`username ALL=(ALL) NOPASSWD: ALL` (then user can run any command without entering password )
 
-## Allow group to have sudo access
+#### Allow group to have sudo access
 
-%group All=(root) ALL (Give group sudo access % shows group )
+`%group All=(root) ALL` (Give group sudo access % shows group )
 
-## Allow user to run only specific command 
+#### Allow user to run only specific command 
 
-user1 ALL=(root) /usr/bin/systemctl restart httpd 
+`user1 ALL=(root) /usr/bin/systemctl restart httpd `
 
-## verify sudo access for user
-
+#### verify sudo access for user
+`
 sudo -l -U user1
+`
+#### Prevent user from using su. 
 
-## Prevent user from using su. 
+`gpasswd -d user wheel`
 
-gpasswd -d user wheel
+### Exam Fixes 
 
-# Exam Fixes 
-
-newgrp groupname
+`newgrp groupname`
 What this command does
 
 newgrp changes the current effective group of the logged-in user without logging out.
@@ -293,23 +293,23 @@ Normally, when you add a user to a new group, the user must log out and log in a
 newgrp applies the group change immediately.
 
 
-## Example
+#### Example
 
-groups
+`groups`
 
-## Output:
+#### Output:
 
-user1 wheel developers
+`user1 wheel developers`
 
-## Now run:
+#### Now run:
 
-newgrp developers
+`newgrp developers`
 
-## After this:
+#### After this:
 
-The primary group for the current shell session becomes developers
+#### The primary group for the current shell session becomes developers
 
-Any files created now will belong to developers
+#### Any files created now will belong to developers
 
 Important exam note
 
@@ -317,10 +317,10 @@ newgrp opens a new shell
 
 When you exit that shell, you return to the original group
 
-## user is locked, Check using 
+#### user is locked, Check using 
 
-passwd -S user1
+`passwd -S user1`
 
 Output : user1 lk = lock
 
-passwd -u user1 (give nwew password)
+`passwd -u user1` (give nwew password)
