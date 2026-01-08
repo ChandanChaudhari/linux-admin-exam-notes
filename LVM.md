@@ -21,7 +21,7 @@ Format it with ext3 and mount it persistently on /mnt/database.
 
 `sudo mount /dev/datastore/database /mnt/database`
 
-### 5) Update entry to /etc/fstab (always update fs to fstab when newly created )
+#### 5) Update entry to /etc/fstab (always update fs to fstab when newly created )
 
 `echo "/dev/datastore/database /mnt/database ext3 defaults 0 0" >> /etc/fstab`
 `mount -a `
