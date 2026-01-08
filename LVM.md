@@ -52,7 +52,7 @@ Format it with ext3 and mount it persistently on /mnt/database.
 `sudo lvs or lvdisplay`
 
 
-<center>### Extend the lv size () </center>
+<center> ### Extend the lv size () </center>
 
 #### 1) find out the type of filesystem
 
