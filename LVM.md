@@ -28,8 +28,7 @@ Format it with ext3 and mount it persistently on /mnt/database.
 
 
 
-#### The logical volume shrink in volume group datastore is mounted on /shrink and formatted with ext4.
-Reduce the size to 220 MB.
+#### The logical volume shrink in volume group datastore is mounted on /shrink and formatted with ext4.Reduce the size to 220 MB.
 (The acceptable range is 200–260 MB.)
 
 #### 1) unmount the lv
