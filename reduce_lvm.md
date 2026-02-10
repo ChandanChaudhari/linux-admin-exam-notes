@@ -17,9 +17,10 @@ The size is allowed between 200-260 MB after reducing.
 ## Procedure
 
 #Verify the logical volume and mount point:
-```bash
-df -h /shrink
-lvdisplay /dev/VGSRV/shrink
+`` `bash
+
+### df -h /shrink
+### lvdisplay /dev/VGSRV/shrink
 
 ##Unmount the filesystem:
 unmount /shrink
