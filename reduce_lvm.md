@@ -20,32 +20,33 @@ The size is allowed between 200-260 MB after reducing.
 ``bash
 
 `df -h /shrink`
+
 `lvdisplay /dev/VGSRV/shrink`
 
-##Unmount the filesystem:
+## Unmount the filesystem:
 `unmount /shrink`
 
-##Check filesystem integrity (mandatory before shrinking):
+## Check filesystem integrity (mandatory before shrinking):
 `e2fsck -f /dev/VGSRV/shrink`
 
-##Resize the filesystem to a safe size smaller than the target LV:
+## Resize the filesystem to a safe size smaller than the target LV:
 `resize2fs /dev/VGSRV/shrink 210M`
 
-##Reduce the logical volume size:
+## Reduce the logical volume size:
 `lvreduce -L 220M /dev/VGSRV/shrink`
 
-##Resize the filesystem to occupy the full logical volume:
+## Resize the filesystem to occupy the full logical volume:
 `resize2fs /dev/VGSRV/shrink`
 
-##Mount the logical volume back:
+## Mount the logical volume back:
 `mount /dev/VGSRV/shrink /shrink`
 
-##Verify final size and status:
+## Verify final size and status:
 `df -h /shrink`
 `lvdisplay /dev/VGSRV/shrink`
 
-##Result :
-The logical volume shrink is successfully reduced from 320 MB to approximately 220 MB, which is within the allowed range (200–260 MB), with no data loss.
+## Result :
+#### The logical volume shrink is successfully reduced from 320 MB to approximately 220 MB, which is within the allowed range (200–260 MB), with no data loss.
 
 erify the logical volume and mount point using df -h /shrink and lvdisplay /dev/VGSRV/shrink to confirm the current size is 320 MB and it is mounted on /shrink. 
 Unmount the filesystem to safely perform shrinking by running umount /shrink and confirm it is unmounted using mount | grep shrink (no output should appear). 
