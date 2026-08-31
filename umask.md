@@ -91,19 +91,19 @@ Result -
 
 ## umask 035
 
-## You answered:
+### You answered:
 `
 file → 622 ❌
 dir  → 742 ❌
 `
-## Remember: UMASK removes bits, it isn't normal decimal subtraction.
+### Remember: UMASK removes bits, it isn't normal decimal subtraction.
 
 For the file:
 `
 666 = rw-rw-rw-
 035 = ---rwx-rwx
 `
-## Remove the masked permissions:
+### Remove the masked permissions:
 `
 User   rw- → rw-
 Group  rw- → r--
@@ -118,7 +118,7 @@ file → 640 = rw-r-----
 777 = rwxrwxrwx
 035 = ---rwxrwx
 `
-## Result:
+### Result:
 
 `
 dir → 740 = rwxr-----
