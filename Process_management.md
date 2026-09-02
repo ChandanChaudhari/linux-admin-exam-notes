@@ -788,8 +788,6 @@ Give the commands to:
 - continue it in the background
 - bring it back to the foreground
 
-
-
 # Linux Process Priority & Niceness (RHCSA Notes)
  
 ## 1. What is a Nice Value?
