@@ -660,14 +660,15 @@ Example:
 
 ```bash
 ps -p 2500 -o pid,ppid,stat,cmd
+
 ```
 
 This is cleaner than:
 
 ```bash
 ps aux | grep 2500
-```
 
+```
 because `ps -p` directly selects the process and avoids accidentally matching the `grep` command itself.
 
 ---
@@ -707,6 +708,61 @@ D → Uninterruptible sleep
 T → Stopped
 Z → Zombie
 ```
+```text
+
+PROCESS
+  │
+  ├── PID / PPID
+  │
+  ├── View
+  │    ├── ps
+  │    ├── ps aux
+  │    ├── ps -ef
+  │    └── top
+  │
+  ├── State
+  │    ├── R = Running/runnable
+  │    ├── S = Sleeping
+  │    ├── D = Uninterruptible sleep
+  │    ├── T = Stopped
+  │    └── Z = Zombie
+  │
+  ├── Job control
+  │    ├── jobs
+  │    ├── bg %1
+  │    └── fg %1
+  │
+  ├── Signals
+  │    ├── SIGTERM = 15
+  │    ├── SIGKILL = 9
+  │    ├── SIGSTOP
+  │    └── SIGCONT
+  │
+  └── Priority
+       ├── nice   → new process
+       └── renice → existing process
+```
+
+## Key Rules to Memorize
+
+```
+
+1) PID identifies a process.
+2) PPID identifies its parent.
+2) kill sends a signal; it does not always mean terminate.
+4) kill PID normally sends SIGTERM (15).
+5) SIGKILL (9) is forceful and cannot be caught or handled.
+6) Ctrl+Z suspends; it does not terminate.
+7) bg and fg use job numbers such as %1.
+8) kill uses PIDs.
+9) nice starts a process with adjusted niceness.
+10) renice changes an existing process's niceness.
+11) Lower nice value = higher CPU scheduling priority.
+12) Higher nice value = lower CPU scheduling priority.
+13) Normal users generally cannot arbitrarily increase process priority using negative nice values.
+14) A zombie has finished execution but has not yet been reaped by its parent.
+
+```
 
 ---
 
@@ -737,8 +793,26 @@ Give the commands to:
 # Linux Process Priority & Niceness (RHCSA Notes)
  
 ## 1. What is a Nice Value?
+
+## A process with a higher niceness is being "nice" to other processes because it gives them more opportunity to use the CPU.
+
+## For example:
+```
+Process A → nice 0
+Process B → nice 10
+```
+### Process B has lower scheduling priority than Process A.
+
+### This can be useful for CPU-intensive tasks that aren't urgent.
+
+## For example:
+```
+nice -n 10 backup-script.sh
+```
+## The backup runs with a lower priority so it is less disruptive to other workloads.
+
  
-Linux processes have a **nice value** that influences CPU scheduling priority.
+## Linux processes have a **nice value** that influences CPU scheduling priority.
  
 | Nice Value | Meaning |
 |---|---|
