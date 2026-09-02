@@ -731,3 +731,264 @@ Then pressed `Ctrl+Z`.
 Give the commands to:
 - continue it in the background
 - bring it back to the foreground
+
+
+
+# Linux Process Priority & Niceness (RHCSA Notes)
+ 
+## 1. What is a Nice Value?
+ 
+Linux processes have a **nice value** that influences CPU scheduling priority.
+ 
+| Nice Value | Meaning |
+|---|---|
+| `-20` | Highest priority |
+| `0`   | Normal / default priority |
+| `+19` | Lowest priority |
+ 
+**Key rule:** Lower nice value = higher CPU scheduling priority.
+ 
+---
+ 
+## 2. `nice` — Start a New Process with a Different Niceness
+ 
+Use `nice` when **launching** a new process.
+ 
+```bash
+nice -n 10 backup.sh
+```
+ 
+| Part | Meaning |
+|---|---|
+| `nice` | Launch a command with an adjusted nice value |
+| `-n 10` | Niceness adjustment |
+| `backup.sh` | Command to run |
+ 
+- If the starting nice value is `0`, the resulting nice value will normally be `10`.
+- This gives the process a **lower** CPU scheduling priority than a process with nice value `0`.
+---
+ 
+## 3. `renice` — Change an Existing Process
+ 
+Use `renice` for a process that is **already running**.
+ 
+```bash
+renice 10 -p 2500
+```
+ 
+| Part | Meaning |
+|---|---|
+| `renice` | Modify process niceness |
+| `10` | Set the nice value to 10 |
+| `-p 2500` | Apply it to PID 2500 |
+ 
+```
+PID 2500
+NI = 0
+   ↓
+renice 10 -p 2500
+   ↓
+NI = 10
+```
+ 
+---
+ 
+## 4. Checking a Process's Nice Value
+ 
+```bash
+ps -p 2500 -o pid,ni,cmd
+```
+ 
+Example output:
+ 
+```
+PID   NI   CMD
+2500   10  backup.sh
+```
+ 
+- `PID` = 2500
+- `NI` = 10 (niceness)
+- `CMD` = backup.sh
+---
+ 
+## 5. Negative Nice Values
+ 
+```bash
+nice -n -5 command
+renice -5 -p 2500
+```
+ 
+- A **negative** nice value means **higher** CPU scheduling priority.
+- Changing a process to a negative nice value generally requires **root/elevated privileges**.
+- A normal user can generally make their own process *less* prioritized, but **cannot** arbitrarily *increase* its priority with negative values.
+---
+ 
+## 6. Nice Value Is Not CPU Usage
+ 
+Do not confuse `NI` with `%CPU`.
+ 
+```
+PID   NI   %CPU
+2500   10   90
+```
+ 
+- `NI 10` → lower CPU scheduling *priority* than NI 0
+- `%CPU 90` → currently *consuming* a large amount of CPU
+> A lower scheduling priority does **not** mean the process cannot consume significant CPU.
+ 
+---
+ 
+## 7. RHCSA Command Summary
+ 
+| Task | Command |
+|---|---|
+| Show current-session processes | `ps` |
+| Show processes for all users / detailed BSD format | `ps aux` |
+| Full process listing | `ps -ef` |
+| Find process by name | `pgrep name` |
+| Inspect specific PID | `ps -p PID -o pid,ppid,stat,cmd` |
+| Monitor processes interactively | `top` |
+| List current shell jobs | `jobs` |
+| Run command in background | `command &` |
+| Suspend foreground process | `Ctrl+Z` |
+| Interrupt foreground process | `Ctrl+C` |
+| Continue stopped job in background | `bg %1` |
+| Bring job to foreground | `fg %1` |
+| Graceful termination | `kill PID` |
+| Explicit SIGTERM | `kill -15 PID` |
+| Force termination | `kill -9 PID` |
+| Stop process | `kill -STOP PID` |
+| Continue stopped process | `kill -CONT PID` |
+| Signal processes by name | `pkill name` |
+| Change priority of new process | `nice -n VALUE command` |
+| Change priority of existing process | `renice VALUE -p PID` |
+| Check nice value | `ps -p PID -o pid,ni,cmd` |
+ 
+---
+ 
+## 8. RHCSA Exam Cheat / Time-Saver
+ 
+**Quickly inspect one PID** — instead of:
+ 
+```bash
+ps aux | grep 2500
+```
+ 
+use:
+ 
+```bash
+ps -p 2500 -o pid,ppid,stat,cmd
+```
+ 
+Cleaner, faster, and avoids accidentally matching the `grep` command itself.
+ 
+**Suspend → background shortcut:**
+ 
+```
+Ctrl+Z   → suspend the foreground command
+bg       → continue it in the background
+```
+ 
+| Shortcut | Meaning |
+|---|---|
+| `Ctrl+C` | Interrupt |
+| `Ctrl+Z` | Suspend |
+| `bg` | Continue in background |
+| `fg` | Continue in foreground |
+ 
+---
+ 
+## 9. Key Concepts to Memorize
+ 
+**Process identification**
+```
+PID  = current process ID
+PPID = parent process ID
+```
+ 
+**Job vs PID**
+```
+%1   = shell job number
+2500 = PID
+```
+ 
+**Signals**
+| Signal | Number | Meaning |
+|---|---|---|
+| SIGTERM | 15 | Graceful termination request |
+| SIGKILL | 9 | Forceful termination |
+| SIGSTOP | 19 | Stop |
+| SIGCONT | 18 | Continue |
+| SIGINT | 2 | Interrupt |
+ 
+**Priority**
+```
+-20 → highest priority
+  0 → normal
++19 → lowest priority
+```
+ 
+**nice vs renice**
+```
+nice    → new process
+renice  → existing process
+```
+ 
+---
+ 
+## 10. Practice Questions
+ 
+1. What command would you use to inspect PID 3456 and display its PID, PPID, state, and command?
+2. What does `S` in the STAT column mean?
+3. You run `sleep 500` and press `Ctrl+Z`. What happened? How would you continue it in the background?
+4. How would you bring job number 1 back to the foreground?
+5. What signal does `kill 4567` normally send?
+6. What is the difference between `kill 4567` and `kill -9 4567`?
+7. How would you resume a process stopped with `SIGSTOP`?
+8. When would you use `kill` instead of `pkill`?
+9. Which has higher CPU scheduling priority: `NI = -5` or `NI = 5`?
+10. How would you start `backup.sh` with a nice value of 10?
+11. PID 5000 is already running. How would you set its nice value to 10?
+12. You see `[1] 7821` after starting a command with `&`. What do `1` and `7821` represent?
+13. A process has `STAT = R`, `NI = 10`. What does this tell you? How would you change its nice value to 5?
+14. Explain the difference between `nice -n 10 command` and `renice 10 -p 2500`.
+---
+ 
+## 11. Final Mental Model
+ 
+```
+1. FIND
+   ↓
+ps / pgrep / top
+ 
+2. IDENTIFY
+   ↓
+PID / PPID / STAT
+ 
+3. CONTROL
+   ↓
+kill / pkill
+SIGTERM / SIGKILL / STOP / CONT
+ 
+4. MANAGE JOBS
+   ↓
+jobs / bg / fg
+Ctrl+C / Ctrl+Z
+ 
+5. PRIORITIZE
+   ↓
+nice / renice
+ 
+6. VERIFY
+   ↓
+ps -p PID -o ...
+```
+ 
+**Most important RHCSA distinctions:**
+ 
+- PID vs Job ID
+- `Ctrl+C` vs `Ctrl+Z`
+- SIGTERM vs SIGKILL
+- `kill` vs `pkill`
+- `nice` vs `renice`
+- `-20` vs `+19`
